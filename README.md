@@ -1,4 +1,4 @@
-# demo
+# axios-cancellation
 
 ## Project setup
 ```
