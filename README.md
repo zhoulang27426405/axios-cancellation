@@ -1,21 +1,13 @@
 # axios-cancellation
 
-## Project setup
+### 
+修改 `src\main.js`，测试请求取消
 ```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+import './plugins/axios3.js'
 ```
 
-### Compiles and minifies for production
+### 
+修改 `src\main.js`，测试请求拦截
 ```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
+import './plugins/axios2.js'
 ```
