@@ -30,31 +30,31 @@ export default {
     btnDisable: false,
     tableData: []
   }),
-  created() {
+  created () {
     this.inputSearch = this.debounce(this.getList, 2000)
   },
   methods: {
     // 函数防抖
-    debounce(func, wait) {
+    debounce (func, wait) {
       let timeout
-      return function() {
+      return function () {
         timeout && clearTimeout(timeout)
         timeout = setTimeout(func, wait)
       }
     },
     // 函数节流
-    throttle(func, wait) {
+    throttle (func, wait) {
       let timeout
-      return function() {
+      return function () {
         if (!timeout) {
-          timeout = setTimeout(function() {
+          timeout = setTimeout(function () {
             timeout = null
             func()
           }, wait)
         }
       }
     },
-    getList() {
+    getList () {
       // this.btnDisable = true
       this.$axios
         .get('//ypwork.zhuanzhuan.com/api/getList')

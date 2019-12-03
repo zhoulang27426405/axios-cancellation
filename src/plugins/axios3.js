@@ -5,21 +5,20 @@ import { Message } from 'element-ui'
 let pendingAjax = []
 const fastClickMsg = '数据请求中，请稍后'
 const CancelToken = axios.CancelToken
-const removePendingAjax = url => {
-  const index = pendingAjax.findIndex(i => i.url == url)
+const removePendingAjax = (url, type) => {
+  const index = pendingAjax.findIndex(i => i.url === url)
   if (index > -1) {
-    pendingAjax[index].c(fastClickMsg)
+    type === 'req' && pendingAjax[index].c(fastClickMsg)
     pendingAjax.splice(index, 1)
   }
 }
 
 // Add a request interceptor
 axios.interceptors.request.use(
-  function(config) {
+  function (config) {
     // Do something before request is sent
-    const arr = config.url.split('api/')
-    const url = arr[arr.length - 1]
-    removePendingAjax(url)
+    const url = config.url
+    removePendingAjax(url, 'req')
     config.cancelToken = new CancelToken(c => {
       pendingAjax.push({
         url,
@@ -28,7 +27,7 @@ axios.interceptors.request.use(
     })
     return config
   },
-  function(error) {
+  function (error) {
     // Do something with request error
     return Promise.reject(error)
   }
@@ -36,23 +35,19 @@ axios.interceptors.request.use(
 
 // Add a response interceptor
 axios.interceptors.response.use(
-  function(response) {
+  function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
+    removePendingAjax(response.config.url, 'resp')
     return new Promise((resolve, reject) => {
-      const code = +response.data.code
-      if (code === 101) {
-        const url = window.location.href
-        reject(new Error('network error:' + response.data.msg))
-        redirect(`//youpinoffice.zhuanzhuan.com/login?redirect=${url}`)
-      } else if (code !== 0) {
+      if (+response.data.code !== 0) {
         reject(new Error('network error:' + response.data.msg))
       } else {
         resolve(response)
       }
     })
   },
-  function(error) {
+  function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     Message.error(error)
