@@ -3,13 +3,13 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 
 let pendingAjax = []
-const fastClickMsg = '数据请求中，请稍后'
+const FAST_CLICK_MSG = '数据请求中，请稍后'
 const CancelToken = axios.CancelToken
 const removePendingAjax = (config, c) => {
   const url = config.url
   const index = pendingAjax.findIndex(i => i === url)
   if (index > -1) {
-    c ? c(fastClickMsg) : pendingAjax.splice(index, 1)
+    c ? c(FAST_CLICK_MSG) : pendingAjax.splice(index, 1)
   } else {
     c && pendingAjax.push(url)
   }

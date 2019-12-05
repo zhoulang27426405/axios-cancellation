@@ -3,12 +3,12 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 
 let pendingAjax = []
-const fastClickMsg = '数据请求中，请稍后'
+const FAST_CLICK_MSG = '数据请求中，请稍后'
 const CancelToken = axios.CancelToken
 const removePendingAjax = (url, type) => {
   const index = pendingAjax.findIndex(i => i.url === url)
   if (index > -1) {
-    type === 'req' && pendingAjax[index].c(fastClickMsg)
+    type === 'req' && pendingAjax[index].c(FAST_CLICK_MSG)
     pendingAjax.splice(index, 1)
   }
 }
@@ -50,8 +50,12 @@ axios.interceptors.response.use(
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    Message.error(error)
-    return Promise.reject(error)
+    if (error.message !== FAST_CLICK_MSG) { 
+      // 修复 由 网络超时等原因，导致 当前请求 url 未从 pendingReqs 删除 
+      pendingAjax.splice(0, pendingAjax.length) 
+      Message.error('网络开小差中') 
+      return Promise.reject(error) 
+    } 
   }
 )
 
