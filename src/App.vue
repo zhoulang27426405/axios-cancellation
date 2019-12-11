@@ -13,6 +13,7 @@
         <el-button type="primary" @click.native="getList" :disabled="btnDisable"
           >查询</el-button
         >
+        <el-button @click.native="fetchList">fetch</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="tableData" style="width: 800px" border size="small">
@@ -53,6 +54,13 @@ export default {
           }, wait)
         }
       }
+    },
+    fetchList () {
+      this.$fetch('//ypwork.zhuanzhuan.com/api/getList')
+        .then(res => {
+          console.log(res.data)
+          this.tableData = res.data
+        })
     },
     getList () {
       // this.btnDisable = true
